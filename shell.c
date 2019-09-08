@@ -1,23 +1,4 @@
-#include<stdio.h>
-#include<string.h> 
-#include<fcntl.h> 
-#include<sys/stat.h>
-#include<sys/wait.h>
-#include<sys/types.h>
-#include<stdlib.h>
-#include<unistd.h> 
-#include<libgen.h>
-#include<dirent.h>
-#include<time.h>
-#include<pwd.h>
-#include<grp.h>
-#include "mypwd.h"
-#include "cdir.h"
-#include "echo.h"
-#include "ls.h"
-#include "pinfo.h"
-#include "hist.h"
-#include "others.h"
+#include "functions/headers.h"
 
 
 int main(int argc,char *argv[])

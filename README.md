@@ -1,7 +1,13 @@
 INTERACTIVE USER DEFINED SHELL
 
 LAUNCHING
-Use the makefile or command "gcc shell.c" and then "./a.out".
+
+Use these commands in terminal for
+
+Compilation: make
+Starting Shell: ./fksh
+Clean: make clean
+
 
 COMMANDS
 The shell has var commands like cd,pwd,echo,ls,foreground and background processes,pinfo,histoory,etc.
@@ -10,11 +16,11 @@ FILES DESCRIPTION:
 
 shell.c: the main file
 
-bg.h : notifies when bg process ends
-hist.h: history fxn
-echo.h: has echo fxn
-cdir.h: has cd fxn
-ls.h: has ls fxn
-mypwd.h: has pwd fxn
-pinfo.h: has pinfo fxn
-others.h:has fremaining foreground,background processes
+bg.c : notifies when bg process ends
+hist.c: history fxn
+echo.c: has echo fxn
+cdir.c: has cd fxn
+ls.c: has ls fxn
+mypwd.c: has pwd fxn
+pinfo.c: has pinfo fxn
+others.c: has remaining foreground,background processes

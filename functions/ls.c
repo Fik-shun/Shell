@@ -1,3 +1,4 @@
+#include "headers.h"
 char *format(char *str, time_t val)
 {
 	strftime(str,100,"%b %d %H:%M",localtime(&val));

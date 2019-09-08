@@ -1,4 +1,5 @@
-#include "bg.h"
+#include "headers.h"
+// #include "bg.h"
 void others(char syscmnd[100][100])
 {
 	char *argv[101];

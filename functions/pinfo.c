@@ -1,3 +1,4 @@
+#include "headers.h"
 void pinfo(char *id)
 {
 	char path[100];

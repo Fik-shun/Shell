@@ -1,3 +1,4 @@
+#include "headers.h"
 void pwd()
 {
 	char mypwd[1024];

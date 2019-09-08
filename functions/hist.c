@@ -1,3 +1,4 @@
+#include "headers.h"
 void hist(char histor[20][100], int h, int n)
 {
 	int x,w,z=1;
