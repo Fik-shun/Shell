@@ -23,6 +23,8 @@ char *format(char *, time_t);
 void pinfo(char *);
 void hist(char histor[20][100], int, int);
 void others(char syscmnd[100][100]);
+void set_env(char cmnd[100][100]);
+void unset_env(char cmnd[100][100]);
 
 
 #endif

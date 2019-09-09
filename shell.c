@@ -128,6 +128,14 @@ int main(int argc,char *argv[])
 					hist(histor,h,no);
 				}
 			}
+			else if(!strcmp(parts[i][0],"setenv"))
+			{
+				set_env(parts[i]);
+			}
+			else if(!strcmp(parts[i][0],"unsetenv"))
+			{
+				unset_env(parts[i]);
+			}
 			else
 			{
 				others(parts[i]);
