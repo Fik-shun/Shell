@@ -20,11 +20,14 @@ void pwd();
 void cdir(char *);
 void echo(char *);
 char *format(char *, time_t);
+void ls(char flag[100][100]);
 void pinfo(char *);
 void hist(char histor[20][100], int, int);
-void others(char syscmnd[100][100]);
+int others(char syscmnd[100][100],char *jobs[],int *,int);
 void set_env(char cmnd[100][100]);
 void unset_env(char cmnd[100][100]);
+void the_jobs(char *jobs[],int *,int);
+
 
 
 #endif

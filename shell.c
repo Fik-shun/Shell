@@ -4,9 +4,13 @@
 int main(int argc,char *argv[])
 {
 	//initial setup
-	int i,y,j,k,h=39,res=0;
+	int i,y,j,k,h=39,res=0,r=0,bgpids[100];
 	long no;
 	char cdto[100], histor[20][100],host[100],orig[1024];
+	char *jobs[20];
+	for(int e=0;e<20;e++){
+		jobs[e]=(char *)malloc(sizeof(char) *100);
+	}
 	
 	for(k=0;k<20;++k)
 		memset(histor[k],'\0',sizeof(histor[k]));
@@ -136,9 +140,16 @@ int main(int argc,char *argv[])
 			{
 				unset_env(parts[i]);
 			}
+			else if(!strcmp(parts[i][0],"jobs"))
+			{
+				the_jobs(jobs,bgpids,r);
+			}
 			else
 			{
-				others(parts[i]);
+				int heyyy = 0;
+				heyyy = others(parts[i],jobs,bgpids,r);
+				if(heyyy==1)
+					r++;
 			}
 		}
 	}		

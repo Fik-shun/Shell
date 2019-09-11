@@ -1,4 +1,4 @@
-all : bg.o cdir.o echo.o hist.o ls.o mypwd.o others.o pinfo.o shell.o env.o
+all : bg.o cdir.o echo.o hist.o ls.o mypwd.o others.o pinfo.o shell.o env.o the_jobs.o
 	gcc $^ -o fksh
 bg.o : functions/bg.c
 	gcc -c functions/bg.c
@@ -27,7 +27,11 @@ pinfo.o : functions/pinfo.c
 env.o : functions/env.c
 	gcc -c functions/env.c
 
+the_jobs.o : functions/the_jobs.c
+	gcc -c functions/the_jobs.c
+
 shell.o : shell.c
 	gcc -c shell.c
+
 clean :
 	rm *.o fksh
