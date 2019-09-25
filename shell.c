@@ -1,6 +1,5 @@
 #include "functions/headers.h"
 
-
 int main(int argc,char *argv[])
 {
 	//initial setup
@@ -81,7 +80,10 @@ int main(int argc,char *argv[])
 		//executing
 		for(i=0;i<totcmnds;++i)
 		{
+			
+
 			memset(parts[i],'\0',sizeof(parts[i]));
+			// printf("%s\n",jobs[0]);
 			char *toke = (char *) calloc(100,sizeof(char));
 			toke = strtok(cmnds[i]," ");
 			int e = 0;
@@ -91,7 +93,6 @@ int main(int argc,char *argv[])
 				e++;
 				toke = strtok(NULL, " ");
 			}
-
 			if(!strcmp(parts[i][0],"pwd"))
 				pwd();
 			else if(!strcmp(parts[i][0],"echo"))
@@ -144,10 +145,36 @@ int main(int argc,char *argv[])
 			{
 				the_jobs(jobs,bgpids,r);
 			}
+			else if(!strcmp(parts[i][0],"kjob"))
+			{
+				kjob(parts[i],bgpids,r);
+			}
+			else if(!strcmp(parts[i][0],"overkill"))
+			{
+				overkill(bgpids,r);
+			}
+			else if(!strcmp(parts[i][0],"quit"))
+			{
+				quit();
+			}
+			else if(!strcmp(parts[i][0],"fg"))
+			{
+				fg(parts[i],bgpids);
+			}
 			else
 			{
 				int heyyy = 0;
-				heyyy = others(parts[i],jobs,bgpids,r);
+				char *hello[100];
+				for(int l=0;l<100;++l)
+					hello[l] = (char *)malloc(sizeof(char) *100);
+
+				// memset(hello,'\0',sizeof(hello));
+				
+				for(int g=0;g<100;++g)
+				{
+					strcpy(hello[g],parts[i][g]);
+				}
+				heyyy = others(hello,jobs,bgpids,r);
 				if(heyyy==1)
 					r++;
 			}

@@ -1,5 +1,5 @@
 #include "headers.h"
-int others(char syscmnd[100][100],char *jobs[],int *bgpids,int r)
+int others(char *syscmnd[],char *jobs[],int *bgpids,int r)
 {
 	char *argv[101];
 	int i,bg=0;
@@ -42,6 +42,7 @@ int others(char syscmnd[100][100],char *jobs[],int *bgpids,int r)
 				strcat(argv[0]," ");
 				strcat(argv[0],argv[w]);
 			}
+			// printf("%s",jobs[0]);
 			jobs[r] = argv[0];
 			bgpids[r] = pid;
 

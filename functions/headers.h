@@ -23,10 +23,14 @@ char *format(char *, time_t);
 void ls(char flag[100][100]);
 void pinfo(char *);
 void hist(char histor[20][100], int, int);
-int others(char syscmnd[100][100],char *jobs[],int *,int);
+int others(char *syscmnd[],char *jobs[],int *,int);
 void set_env(char cmnd[100][100]);
 void unset_env(char cmnd[100][100]);
 void the_jobs(char *jobs[],int *,int);
+void kjob(char cmnd[100][100],int *,int);
+void overkill(int *,int);
+void quit();
+void fg(char cmnd[100][100],int *);
 
 
 
