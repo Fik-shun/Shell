@@ -1,7 +1,7 @@
-all : bg.o cdir.o echo.o hist.o ls.o mypwd.o others.o pinfo.o shell.o env.o the_jobs.o kill.o fg.o
+all : bgend.o cdir.o echo.o hist.o ls.o mypwd.o others.o pinfo.o shell.o env.o the_jobs.o kill.o fg.o
 	gcc $^ -o fksh
-bg.o : functions/bg.c
-	gcc -c functions/bg.c
+bgend.o : functions/bgend.c
+	gcc -c functions/bgend.c
 
 cdir.o : functions/cdir.c
 	gcc -c functions/cdir.c
