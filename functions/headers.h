@@ -34,5 +34,4 @@ void fg(char cmnd[100][100],int *);
 void bg(char cmnd[100][100],int *);
 
 
-
 #endif

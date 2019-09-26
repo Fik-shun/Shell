@@ -1,7 +1,55 @@
 #include "functions/headers.h"
 
+void sigintHandler(int sig_num) 
+{ 
+    signal(SIGINT, sigintHandler); 
+    fflush(stdout); 
+}
+
+void sigabrtHandler(int sig_num) 
+{ 
+    signal(SIGABRT, sigintHandler); 
+    fflush(stdout); 
+}
+
+void sigtermHandler(int sig_num) 
+{ 
+    signal(SIGTERM, sigintHandler); 
+    fflush(stdout); 
+}
+
+void sighupHandler(int sig_num) 
+{ 
+    signal(SIGHUP, sigintHandler); 
+    fflush(stdout); 
+}
+
+void sigtstpHandler(int sig_num) 
+{ 
+    signal(SIGTSTP, sigintHandler); 
+    fflush(stdout); 
+}
+
+void sigquitHandler(int sig_num) 
+{ 
+    signal(SIGQUIT, sigquitHandler); 
+    fflush(stdout); 
+}
+
 int main(int argc,char *argv[])
 {
+
+
+
+	signal(SIGINT, sigintHandler);
+	signal(SIGABRT, sigabrtHandler);
+	signal(SIGTERM, sigtermHandler);
+	signal(SIGHUP, sighupHandler);
+	signal(SIGTSTP, sigtstpHandler);
+	signal(SIGQUIT, sigquitHandler);
+
+
+
 	//initial setup
 	int i,y,j,k,h=39,res=0,r=0,bgpids[100];
 	long no;
@@ -71,24 +119,41 @@ int main(int argc,char *argv[])
 		//executing
 		for(i=0;i<totcmnds;++i)
 		{
+
+
+			//checking ouput redirection
+			int w2 = 0;
+			char *tokenNew = strtok(cmnds[i],">");
+			char rcmnds[100][100];
+			while(tokenNew!=NULL)
+			{
+				strcpy(rcmnds[w2],tokenNew);
+				w2++;
+				tokenNew = strtok(NULL, ">");
+			}
+
+			int redirect = 0;
+			int file1;
+			int stdout_copy;
+			if(w2==2)
+			{
+				redirect = 1;
+				stdout_copy = dup(1);
+				close(1);
+				file1 = open(rcmnds[1]+1,O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			}
+
+
+
 			memset(parts[i],'\0',sizeof(parts[i]));
 			char *toke = (char *) calloc(100,sizeof(char));
-			toke = strtok(cmnds[i]," ");
+			toke = strtok(rcmnds[0]," ");
 			int e = 0;
 			while(toke!=NULL)
 			{
 				strcpy(parts[i][e],toke);
 				e++;
 				toke = strtok(NULL, " ");
-			}
-			int redirect = 0;
-			int file1;
-			int stdout_copy;
-			if(redirect==1)
-			{
-				stdout_copy = dup(1);
-				close(1);
-				file1 = open("tricky.txt",O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			}
 
 			if(!strcmp(parts[i][0],"pwd"))
