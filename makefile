@@ -1,4 +1,4 @@
-all : bgend.o cdir.o echo.o hist.o ls.o mypwd.o others.o pinfo.o shell.o env.o the_jobs.o kill.o fg.o
+all : bgend.o cdir.o echo.o hist.o ls.o mypwd.o others.o pinfo.o shell.o env.o the_jobs.o kill.o bg_fg.o
 	gcc $^ -o fksh
 bgend.o : functions/bgend.c
 	gcc -c functions/bgend.c
@@ -33,8 +33,8 @@ the_jobs.o : functions/the_jobs.c
 kill.o : functions/kill.c
 	gcc -c functions/kill.c	
 
-fg.o : functions/fg.c
-	gcc -c functions/fg.c
+bg_fg.o : functions/bg_fg.c
+	gcc -c functions/bg_fg.c
 
 shell.o : shell.c
 	gcc -c shell.c

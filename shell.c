@@ -39,25 +39,16 @@ int main(int argc,char *argv[])
 		strcpy(cwdf,cwd);
 		cwdf[strlen(orig)] = '\0';
 
+		//print prompt
 		if(strlen(cwd)>=strlen(orig) && !strcmp(cwdf,orig) && (cwd[strlen(orig)]=='/' || cwd[strlen(orig)]=='\0'))
 			printf("<%s@%s:~%s>",user,host,cwd+strlen(orig));
 		else
 			printf("<%s@%s:%s>",user,host,cwd);
 		fflush(stdout);
 
-
-
-
 		//inp command
-
 		fgets(inp,10000,stdin);
-		// printf("%d\n",res);
-		// if(res!=0)
-		
- 
-
 		inp[strlen(inp)-1] = '\0'; //removed \n
-
 
 		//for hist
 		if( h==39 || strcmp(inp,histor[h]))
@@ -67,7 +58,7 @@ int main(int argc,char *argv[])
 			strcpy(histor[h],inp);
 		}	
 
-		//breaking inp
+		//breaking inp by ;
 		char *token = strtok(inp,";");
 		while(token!=NULL)
 		{
@@ -80,10 +71,7 @@ int main(int argc,char *argv[])
 		//executing
 		for(i=0;i<totcmnds;++i)
 		{
-			
-
 			memset(parts[i],'\0',sizeof(parts[i]));
-			// printf("%s\n",jobs[0]);
 			char *toke = (char *) calloc(100,sizeof(char));
 			toke = strtok(cmnds[i]," ");
 			int e = 0;
@@ -93,6 +81,16 @@ int main(int argc,char *argv[])
 				e++;
 				toke = strtok(NULL, " ");
 			}
+			int redirect = 0;
+			int file1;
+			int stdout_copy;
+			if(redirect==1)
+			{
+				stdout_copy = dup(1);
+				close(1);
+				file1 = open("tricky.txt",O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			}
+
 			if(!strcmp(parts[i][0],"pwd"))
 				pwd();
 			else if(!strcmp(parts[i][0],"echo"))
@@ -161,15 +159,16 @@ int main(int argc,char *argv[])
 			{
 				fg(parts[i],bgpids);
 			}
+			else if(!strcmp(parts[i][0],"bg"))
+			{
+				bg(parts[i],bgpids);
+			}
 			else
 			{
 				int heyyy = 0;
 				char *hello[100];
 				for(int l=0;l<100;++l)
 					hello[l] = (char *)malloc(sizeof(char) *100);
-
-				// memset(hello,'\0',sizeof(hello));
-				
 				for(int g=0;g<100;++g)
 				{
 					strcpy(hello[g],parts[i][g]);
@@ -177,6 +176,12 @@ int main(int argc,char *argv[])
 				heyyy = others(hello,jobs,bgpids,r);
 				if(heyyy==1)
 					r++;
+			}
+			if(redirect==1)
+			{
+				close(file1);
+				dup2(stdout_copy, 1);
+				close(stdout_copy);
 			}
 		}
 	}		

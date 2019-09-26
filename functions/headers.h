@@ -31,6 +31,7 @@ void kjob(char cmnd[100][100],int *,int);
 void overkill(int *,int);
 void quit();
 void fg(char cmnd[100][100],int *);
+void bg(char cmnd[100][100],int *);
 
 
 
