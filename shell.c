@@ -1,9 +1,9 @@
 #include "functions/headers.h"
-// void sigintHandler(int sig_num) 
-// { 
-//     signal(SIGINT, sigintHandler); 
-//     fflush(stdout); 
-// }
+void sigintHandler(int sig_num) 
+{ 
+    signal(SIGINT, sigintHandler); 
+    fflush(stdout); 
+}
 
 void sigabrtHandler(int sig_num) 
 { 
@@ -39,7 +39,7 @@ int main(int argc,char *argv[])
 {
 	totalkill = 0;
 
-	// signal(SIGINT, sigintHandler);
+	signal(SIGINT, sigintHandler);
 	signal(SIGABRT, sigabrtHandler);
 	signal(SIGTERM, sigtermHandler);
 	signal(SIGHUP, sighupHandler);
@@ -119,8 +119,11 @@ int main(int argc,char *argv[])
 		{
 
 
-			//checking ouput redirection
+			//checking output redirection
+			//iterate...and find
 			int w2 = 0;
+			char cmndcopy[100];
+			sprintf(cmndcopy,"%s",cmnds[i]);
 			char *tokenNew = strtok(cmnds[i],">");
 			char rcmnds[100][100];
 			while(tokenNew!=NULL)
@@ -132,22 +135,57 @@ int main(int argc,char *argv[])
 
 			int redirect = 0;
 			int file1;
+			int append=0;
 			int stdout_copy;
 			if(w2==2)
 			{
+				for(int v=0;v<strlen(cmndcopy);++v)
+					if(cmndcopy[v]=='>'&&cmndcopy[v-1]=='>')
+						append=1;
+				printf("%d\n",append);
 				redirect = 1;
 				stdout_copy = dup(1);
 				close(1);
-
-				file1 = open(rcmnds[1]+1,O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if(append==1)
+					file1 = open(rcmnds[1]+1,O_APPEND | O_WRONLY | O_CREAT, 0644);
+				else
+					file1 = open(rcmnds[1]+1,O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			}
 
-			int w3 = 0;
+
+			//checking input redirection
+			int w7 = 0;
+			char *tokenNew2 = strtok(rcmnds[0],"<");
 			char r2cmnds[100][100];
-			char *tokenPipe = strtok(rcmnds[0],"|");
+			while(tokenNew2!=NULL)
+			{
+				strcpy(r2cmnds[w7],tokenNew2);
+				w7++;
+				tokenNew2 = strtok(NULL, "<");
+			}
+			int redirect2 = 0;
+			int file2;
+			int stdin_copy;
+			if(w7==2)
+			{
+				redirect2 = 1;
+				stdin_copy = dup(0);
+				close(0);
+				char thefilename[100];
+				sprintf(thefilename,"%s",r2cmnds[1]+1);
+				for(int o=0;o<strlen(thefilename);++o)
+					if(thefilename[o]==' ')
+						thefilename[o] = '\0';
+				file2 = open(thefilename,O_RDONLY, 0644);
+			}
+
+
+			int w3 = 0;
+			char r3cmnds[100][100];
+			char *tokenPipe = strtok(r2cmnds[0],"|");
 			while(tokenPipe!=NULL)
 			{
-				strcpy(r2cmnds[w3],tokenPipe);
+				strcpy(r3cmnds[w3],tokenPipe);
 				w3++;
 				tokenPipe = strtok(NULL, "|");
 			}
@@ -172,7 +210,7 @@ int main(int argc,char *argv[])
 
 	                memset(parts[i],'\0',sizeof(parts[i]));
 					char *toke = (char *) calloc(100,sizeof(char));
-					toke = strtok(r2cmnds[0]," ");
+					toke = strtok(r3cmnds[0]," ");
 					int e = 0;
 					while(toke!=NULL)
 					{
@@ -282,7 +320,7 @@ int main(int argc,char *argv[])
 	               
 	                memset(parts[i],'\0',sizeof(parts[i]));
 					char *toke = (char *) calloc(100,sizeof(char));
-					toke = strtok(r2cmnds[1]," ");
+					toke = strtok(r3cmnds[1]," ");
 					int e = 0;
 					while(toke!=NULL)
 					{
@@ -412,6 +450,14 @@ int main(int argc,char *argv[])
 				}
 					
 			}
+
+			if(redirect2==1)
+			{
+				close(file2);
+				dup2(stdin_copy, 0);
+				close(stdin_copy);
+			}
+
 			if(redirect==1)
 			{
 				close(file1);
