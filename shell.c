@@ -1,5 +1,4 @@
 #include "functions/headers.h"
-
 // void sigintHandler(int sig_num) 
 // { 
 //     signal(SIGINT, sigintHandler); 
@@ -38,8 +37,7 @@ void sigquitHandler(int sig_num)
 
 int main(int argc,char *argv[])
 {
-
-
+	totalkill = 0;
 
 	// signal(SIGINT, sigintHandler);
 	signal(SIGABRT, sigabrtHandler);
@@ -143,7 +141,6 @@ int main(int argc,char *argv[])
 
 				file1 = open(rcmnds[1]+1,O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			}
-
 
 			int w3 = 0;
 			char r2cmnds[100][100];

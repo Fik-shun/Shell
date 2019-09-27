@@ -15,6 +15,8 @@
 #include<pwd.h>
 #include<grp.h>
 
+int killed[100];
+int totalkill;
 void bgend();
 void pwd();
 void cdir(char *);

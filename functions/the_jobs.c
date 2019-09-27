@@ -3,7 +3,17 @@ void the_jobs(char *jobs[],int *bgpids,int r)
 {
 	for(int i=0;i<r;++i)
 	{
-
+		int skip = 0;
+		for(int e=0;e<totalkill;++e)
+		{
+			if(killed[e]==bgpids[i])
+			{
+				skip = 1;
+				break;
+			}
+		}
+		if(skip==1)
+			continue;
 		char path[100];
 		sprintf(path,"/proc/%d/stat", bgpids[i]);
 

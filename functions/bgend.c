@@ -18,6 +18,10 @@ void bgend()
 	sprintf(theexit,"\npid %d exited.\n%s\n",pid,nrml);
 	if(pid>0)//means parent
 	{
+		//remove job corresponding to this pid
+		//
+		killed[totalkill] = pid;
+		totalkill++;
 		write(2,theexit,strlen(theexit));
 		int i,y,j,k,h=39;
 		long no;
