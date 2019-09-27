@@ -1,32 +1,32 @@
 #include "functions/headers.h"
 
-void sigintHandler(int sig_num) 
-{ 
-    signal(SIGINT, sigintHandler); 
-    fflush(stdout); 
-}
+// void sigintHandler(int sig_num) 
+// { 
+//     signal(SIGINT, sigintHandler); 
+//     fflush(stdout); 
+// }
 
 void sigabrtHandler(int sig_num) 
 { 
-    signal(SIGABRT, sigintHandler); 
+    signal(SIGABRT, sigabrtHandler); 
     fflush(stdout); 
 }
 
 void sigtermHandler(int sig_num) 
 { 
-    signal(SIGTERM, sigintHandler); 
+    signal(SIGTERM, sigtermHandler); 
     fflush(stdout); 
 }
 
 void sighupHandler(int sig_num) 
 { 
-    signal(SIGHUP, sigintHandler); 
+    signal(SIGHUP, sighupHandler); 
     fflush(stdout); 
 }
 
 void sigtstpHandler(int sig_num) 
 { 
-    signal(SIGTSTP, sigintHandler); 
+    signal(SIGTSTP, sigtstpHandler); 
     fflush(stdout); 
 }
 
@@ -41,7 +41,7 @@ int main(int argc,char *argv[])
 
 
 
-	signal(SIGINT, sigintHandler);
+	// signal(SIGINT, sigintHandler);
 	signal(SIGABRT, sigabrtHandler);
 	signal(SIGTERM, sigtermHandler);
 	signal(SIGHUP, sighupHandler);
@@ -140,113 +140,297 @@ int main(int argc,char *argv[])
 				redirect = 1;
 				stdout_copy = dup(1);
 				close(1);
+
 				file1 = open(rcmnds[1]+1,O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			}
 
 
-
-			memset(parts[i],'\0',sizeof(parts[i]));
-			char *toke = (char *) calloc(100,sizeof(char));
-			toke = strtok(rcmnds[0]," ");
-			int e = 0;
-			while(toke!=NULL)
+			int w3 = 0;
+			char r2cmnds[100][100];
+			char *tokenPipe = strtok(rcmnds[0],"|");
+			while(tokenPipe!=NULL)
 			{
-				strcpy(parts[i][e],toke);
-				e++;
-				toke = strtok(NULL, " ");
+				strcpy(r2cmnds[w3],tokenPipe);
+				w3++;
+				tokenPipe = strtok(NULL, "|");
 			}
 
-			if(!strcmp(parts[i][0],"pwd"))
-				pwd();
-			else if(!strcmp(parts[i][0],"echo"))
+			if(w3>1)
 			{
-				echo(parts[i][1]);
-			}	
-			else if(!strcmp(parts[i][0],"cd"))
-			{
-				if(strcmp(parts[i][1],"~")&&strcmp(parts[i][1],""))
-					cdir(parts[i][1]);
-				else
-					cdir(orig);
-			}
-			else if(!strcmp(parts[i][0],"ls"))
-			{
-				ls(parts[i]);
-			}
-			else if(!strcmp(parts[i][0],"pinfo"))
-			{
-				if(!strcmp(parts[i][1],""))
-				{
-					char theid[10];
-					memset(theid,'\0',sizeof(theid));
-					sprintf(theid,"%d", getpid());
-					pinfo(theid);
-				}
-				else
-					pinfo(parts[i][1]);
-			}
-			else if(!strcmp(parts[i][0],"history"))
-			{
-				if(!strcmp(parts[i][1],""))
-					hist(histor,h,10);
-				else
-				{
-					char *ptr;
-					no = strtol(parts[i][1],&ptr,10);
-					hist(histor,h,no);
-				}
-			}
-			else if(!strcmp(parts[i][0],"setenv"))
-			{
-				set_env(parts[i]);
-			}
-			else if(!strcmp(parts[i][0],"unsetenv"))
-			{
-				unset_env(parts[i]);
-			}
-			else if(!strcmp(parts[i][0],"jobs"))
-			{
-				the_jobs(jobs,bgpids,r);
-			}
-			else if(!strcmp(parts[i][0],"kjob"))
-			{
-				kjob(parts[i],bgpids,r);
-			}
-			else if(!strcmp(parts[i][0],"overkill"))
-			{
-				overkill(bgpids,r);
-			}
-			else if(!strcmp(parts[i][0],"quit"))
-			{
-				quit();
-			}
-			else if(!strcmp(parts[i][0],"fg"))
-			{
-				fg(parts[i],bgpids);
-			}
-			else if(!strcmp(parts[i][0],"bg"))
-			{
-				bg(parts[i],bgpids);
+
+				int in = dup(0);
+				int out = dup(1);
+
+
+				int pipes[2];
+				pipe(pipes);
+				pid_t pipepid = fork();
+
+
+				if(pipepid == 0)
+		        {
+
+		        	close(pipes[0]);
+		        	dup2(pipes[1],1);
+
+	                memset(parts[i],'\0',sizeof(parts[i]));
+					char *toke = (char *) calloc(100,sizeof(char));
+					toke = strtok(r2cmnds[0]," ");
+					int e = 0;
+					while(toke!=NULL)
+					{
+						strcpy(parts[i][e],toke);
+						e++;
+						toke = strtok(NULL, " ");
+					}
+
+					if(!strcmp(parts[i][0],"pwd"))
+						pwd();
+					else if(!strcmp(parts[i][0],"echo"))
+					{
+						echo(parts[i][1]);
+					}	
+					else if(!strcmp(parts[i][0],"cd"))
+					{
+						if(strcmp(parts[i][1],"~")&&strcmp(parts[i][1],""))
+							cdir(parts[i][1]);
+						else
+							cdir(orig);
+					}
+					else if(!strcmp(parts[i][0],"ls"))
+					{
+						ls(parts[i]);
+					}
+					else if(!strcmp(parts[i][0],"pinfo"))
+					{
+						if(!strcmp(parts[i][1],""))
+						{
+							char theid[10];
+							memset(theid,'\0',sizeof(theid));
+							sprintf(theid,"%d", getpid());
+							pinfo(theid);
+						}
+						else
+							pinfo(parts[i][1]);
+					}
+					else if(!strcmp(parts[i][0],"history"))
+					{
+						if(!strcmp(parts[i][1],""))
+							hist(histor,h,10);
+						else
+						{
+							char *ptr;
+							no = strtol(parts[i][1],&ptr,10);
+							hist(histor,h,no);
+						}
+					}
+					else if(!strcmp(parts[i][0],"setenv"))
+					{
+						set_env(parts[i]);
+					}
+					else if(!strcmp(parts[i][0],"unsetenv"))
+					{
+						unset_env(parts[i]);
+					}
+					else if(!strcmp(parts[i][0],"jobs"))
+					{
+						the_jobs(jobs,bgpids,r);
+					}
+					else if(!strcmp(parts[i][0],"kjob"))
+					{
+						kjob(parts[i],bgpids,r);
+					}
+					else if(!strcmp(parts[i][0],"overkill"))
+					{
+						overkill(bgpids,r);
+					}
+					else if(!strcmp(parts[i][0],"quit"))
+					{
+						quit();
+					}
+					else if(!strcmp(parts[i][0],"fg"))
+					{
+						fg(parts[i],bgpids);
+					}
+					else if(!strcmp(parts[i][0],"bg"))
+					{
+						bg(parts[i],bgpids);
+					}
+					else
+					{
+						int heyyy = 0;
+						char *hello[100];
+						for(int l=0;l<100;++l)
+							hello[l] = (char *)malloc(sizeof(char) *100);
+						for(int g=0;g<100;++g)
+						{
+							strcpy(hello[g],parts[i][g]);
+						}
+						heyyy = others(hello,jobs,bgpids,r);
+						if(heyyy==1)
+							r++;
+					}
+					if(redirect==1)
+					{
+						close(file1);
+						dup2(stdout_copy, 1);
+						close(stdout_copy);
+					}
+
+	                exit(0);
+
+		        }
+		        else
+		        {
+
+		       		close(pipes[1]);
+		       		dup2(pipes[0],0);
+
+		        	waitpid(pipepid,NULL,0);
+	                /* Parent process closes up output side of pipe */
+	               
+	                memset(parts[i],'\0',sizeof(parts[i]));
+					char *toke = (char *) calloc(100,sizeof(char));
+					toke = strtok(r2cmnds[1]," ");
+					int e = 0;
+					while(toke!=NULL)
+					{
+						strcpy(parts[i][e],toke);
+						e++;
+						toke = strtok(NULL, " ");
+					}
+					
+
+					
+					int heyyy = 0;
+					char *hello[100];
+					for(int l=0;l<100;++l)
+						hello[l] = (char *)malloc(sizeof(char) *100);
+					for(int g=0;g<100;++g)
+					{
+						strcpy(hello[g],parts[i][g]);
+					}
+					heyyy = others(hello,jobs,bgpids,r);
+					if(heyyy==1)
+						r++;
+
+
+					if(redirect==1)
+					{
+						close(file1);
+						dup2(stdout_copy, 1);
+						close(stdout_copy);
+					}
+					
+		        }
+		        dup2(out,1);
+		        dup2(in,0);
 			}
 			else
 			{
-				int heyyy = 0;
-				char *hello[100];
-				for(int l=0;l<100;++l)
-					hello[l] = (char *)malloc(sizeof(char) *100);
-				for(int g=0;g<100;++g)
+				memset(parts[i],'\0',sizeof(parts[i]));
+				char *toke = (char *) calloc(100,sizeof(char));
+				toke = strtok(r2cmnds[0]," ");
+				int e = 0;
+				while(toke!=NULL)
 				{
-					strcpy(hello[g],parts[i][g]);
+					strcpy(parts[i][e],toke);
+					e++;
+					toke = strtok(NULL, " ");
 				}
-				heyyy = others(hello,jobs,bgpids,r);
-				if(heyyy==1)
-					r++;
-			}
-			if(redirect==1)
-			{
-				close(file1);
-				dup2(stdout_copy, 1);
-				close(stdout_copy);
+
+				if(!strcmp(parts[i][0],"pwd"))
+					pwd();
+				else if(!strcmp(parts[i][0],"echo"))
+				{
+					echo(parts[i][1]);
+				}	
+				else if(!strcmp(parts[i][0],"cd"))
+				{
+					if(strcmp(parts[i][1],"~")&&strcmp(parts[i][1],""))
+						cdir(parts[i][1]);
+					else
+						cdir(orig);
+				}
+				else if(!strcmp(parts[i][0],"ls"))
+				{
+					ls(parts[i]);
+				}
+				else if(!strcmp(parts[i][0],"pinfo"))
+				{
+					if(!strcmp(parts[i][1],""))
+					{
+						char theid[10];
+						memset(theid,'\0',sizeof(theid));
+						sprintf(theid,"%d", getpid());
+						pinfo(theid);
+					}
+					else
+						pinfo(parts[i][1]);
+				}
+				else if(!strcmp(parts[i][0],"history"))
+				{
+					if(!strcmp(parts[i][1],""))
+						hist(histor,h,10);
+					else
+					{
+						char *ptr;
+						no = strtol(parts[i][1],&ptr,10);
+						hist(histor,h,no);
+					}
+				}
+				else if(!strcmp(parts[i][0],"setenv"))
+				{
+					set_env(parts[i]);
+				}
+				else if(!strcmp(parts[i][0],"unsetenv"))
+				{
+					unset_env(parts[i]);
+				}
+				else if(!strcmp(parts[i][0],"jobs"))
+				{
+					the_jobs(jobs,bgpids,r);
+				}
+				else if(!strcmp(parts[i][0],"kjob"))
+				{
+					kjob(parts[i],bgpids,r);
+				}
+				else if(!strcmp(parts[i][0],"overkill"))
+				{
+					overkill(bgpids,r);
+				}
+				else if(!strcmp(parts[i][0],"quit"))
+				{
+					quit();
+				}
+				else if(!strcmp(parts[i][0],"fg"))
+				{
+					fg(parts[i],bgpids);
+				}
+				else if(!strcmp(parts[i][0],"bg"))
+				{
+					bg(parts[i],bgpids);
+				}
+				else
+				{
+					int heyyy = 0;
+					char *hello[100];
+					for(int l=0;l<100;++l)
+						hello[l] = (char *)malloc(sizeof(char) *100);
+					for(int g=0;g<100;++g)
+					{
+						strcpy(hello[g],parts[i][g]);
+					}
+					heyyy = others(hello,jobs,bgpids,r);
+					if(heyyy==1)
+						r++;
+				}
+				if(redirect==1)
+				{
+					close(file1);
+					dup2(stdout_copy, 1);
+					close(stdout_copy);
+				}	
 			}
 		}
 	}		
