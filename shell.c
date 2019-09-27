@@ -270,12 +270,6 @@ int main(int argc,char *argv[])
 						if(heyyy==1)
 							r++;
 					}
-					if(redirect==1)
-					{
-						close(file1);
-						dup2(stdout_copy, 1);
-						close(stdout_copy);
-					}
 
 	                exit(0);
 
@@ -315,12 +309,6 @@ int main(int argc,char *argv[])
 						r++;
 
 
-					if(redirect==1)
-					{
-						close(file1);
-						dup2(stdout_copy, 1);
-						close(stdout_copy);
-					}
 					
 		        }
 		        dup2(out,1);
@@ -425,12 +413,13 @@ int main(int argc,char *argv[])
 					if(heyyy==1)
 						r++;
 				}
-				if(redirect==1)
-				{
-					close(file1);
-					dup2(stdout_copy, 1);
-					close(stdout_copy);
-				}	
+					
+			}
+			if(redirect==1)
+			{
+				close(file1);
+				dup2(stdout_copy, 1);
+				close(stdout_copy);
 			}
 		}
 	}		
